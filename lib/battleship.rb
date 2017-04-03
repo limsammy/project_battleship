@@ -1,8 +1,9 @@
 require 'pry'
+require_relative 'interface'
 
-class BattleShip
+class Battleship
   def initialize
-    @message = Message.new
+    @interface = Interface.new
   end
 
   def get_input
@@ -10,7 +11,7 @@ class BattleShip
   end
 
   def start_game
-    @message.welcome
+    @interface.welcome
     game_menu_choice
   end
 
@@ -23,10 +24,18 @@ class BattleShip
       show_instructions
     when 'q'
       abort('Quitting...')
+    end
   end
 
   def show_instructions
-    @message.instructions
+    @interface.instructions
     start_game
   end
+
+  def choose_difficulty
+    @interface.difficulties
+  end
 end
+
+# ship = Battleship.new
+# ship.start_game
