@@ -10,4 +10,8 @@ class Interface
   def instructions
     puts 'Define instructions here (interface#instructions)'
   end
+
+  def difficulties
+    puts 'Choose a difficulty: (e)asy, (m)edium, or (h)ard'
+  end
 end
