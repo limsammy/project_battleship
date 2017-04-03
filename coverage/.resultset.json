@@ -1,0 +1,36 @@
+{
+  "Unit Tests": {
+    "coverage": {
+      "/Users/sam/turing/1module/project_battleship/lib/game.rb": [
+        1,
+        null,
+        1,
+        null,
+        null
+      ],
+      "/Users/sam/turing/1module/project_battleship/test/interface_test.rb": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        null,
+        1,
+        1,
+        1,
+        null,
+        1,
+        null,
+        null
+      ],
+      "/Users/sam/turing/1module/project_battleship/lib/interface.rb": [
+        1,
+        null,
+        1,
+        null,
+        null
+      ]
+    },
+    "timestamp": 1491177749
+  }
+}
