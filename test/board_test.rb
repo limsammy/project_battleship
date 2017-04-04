@@ -15,7 +15,7 @@ class BoardTest < Minitest::Test
     assert_equal 4, board.size
   end
 
-  def test_create_grid
+  def test_create_board
     board = Board.new(4, "Board 1", false)
 
     board_test = board.setup_grid
@@ -25,7 +25,7 @@ class BoardTest < Minitest::Test
     assert_equal Space, board_test[rand(0..3)][rand(0..3)].class
   end
 
-  def test_grid_can_be_created_automatically
+  def test_board_can_be_created_automatically
     board = Board.new(4, "Board 1", false)
 
     assert_equal 4,   board.grid.length
@@ -49,9 +49,16 @@ class BoardTest < Minitest::Test
     assert_equal labels, board.column_labels
   end
 
-  def test_grid_values
+  def test_board_values
     board = Board.new(4, "Board 1", false)
     vals = " ." * 4
+
+    assert_equal vals, board.display_values(1)
+  end
+
+  def test_display_board_values_empty
+    board = Board.new(6, "Board 1", false)
+    vals = " . . . . . ."
 
     assert_equal vals, board.display_values(1)
   end
