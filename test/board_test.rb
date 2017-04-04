@@ -62,4 +62,13 @@ class BoardTest < Minitest::Test
 
     assert_equal vals, board.display_values(1)
   end
+
+  def test_display_board_values_with_hits_and_misses
+    board = Board.new(6, "Main Board", false)
+    board.grid[1][2] = Space.new("Hit")
+    board.grid[1][4] = Space.new("Miss")
+    vals = " . . H . M ."
+
+    assert_equal vals, board.display_values(1)
+  end
 end
