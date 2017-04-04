@@ -2,6 +2,8 @@ require 'pry'
 require_relative 'interface'
 
 class Battleship
+  attr_reader :human, :computer
+
   def initialize
     @interface = Interface.new
   end
@@ -34,6 +36,46 @@ class Battleship
 
   def choose_difficulty
     @interface.difficulties
+    input = get_input
+    case input
+    when 'e'
+      size = 4
+      ships = [ ["Destroyer",   2],
+                ["Patrol",      3]]
+      human_setup(size, ships)
+      computer_setup(size, ships)
+    when "m"
+      size = 8
+      ships = [ ["Destroyer",   2],
+                ["Patrol",      3],
+                ["Battleship",  4]]
+      human_setup(size, ships)
+      computer_setup(size, ships)
+    when "h"
+      size = 8
+      ships = [ ["Destroyer",   2],
+                ["Patrol",      3],
+                ["Battleship",  4],
+                ["Carrier",     5]]
+      human_setup(size, ships)
+      computer_setup(size, ships)
+    else
+      @interface.selection_error(selection)
+      select_difficulty
+    end
+  end
+
+  def human_setup(size, ships)
+    @interface.get_human_name
+    input = get_input
+    @human = Player.new(input, false)
+    @human.setup_board(size, ships)
+  end
+
+  def computer_setup(size, ships)
+    @computer = Player.new("Computer", true)
+    @computer.setup_board(size, ships)
+    @interface.computer_setup_complete
   end
 end
 
