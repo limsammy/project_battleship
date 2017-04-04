@@ -1,7 +1,9 @@
 require_relative 'space'
 
 class Board
-  def initialize(size)
+  def initialize(size, type, ai)
+    @ai = ai
+    @type = type
     @size = size
     @grid = setup_grid
     @ships = []
