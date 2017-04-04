@@ -18,4 +18,26 @@ class Board
       @ships.push(Ship.new(name, size, coordinates))
     end
   end
+
+  def get_coordinates(ship)
+    if ship.coordinates.nil?
+      generator = CoordGen.new(@size)
+    else
+      generator = CoordGen.new(@size, ship.coordinates)
+    end
+
+    if @ai
+      generator.calc_ship_coordinates(ship.size)
+    else
+      Interface.placed_player_ship(ship, self)
+      generator.calc_ship_coordinates(ship.size)
+    end
+
+    if empty_coordinates?(generator.coordinates)
+      generator.coordinates
+    else
+      ship.coordinates = nil
+      false
+    end
+  end
 end
