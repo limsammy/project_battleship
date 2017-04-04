@@ -32,4 +32,27 @@ class BoardTest < Minitest::Test
     assert_equal 4,   board.grid[0].length
     assert_equal Space, board.grid[rand(0..3)][rand(0..3)].class
   end
+
+  def test_outline
+    board = Board.new(4, "Board 1", false)
+
+    line = "=" * 12
+
+    assert_equal line, board.outline
+  end
+
+  def test_column_labels
+    board = Board.new(4, "Board 1", false)
+
+    labels = "   A B C D"
+
+    assert_equal labels, board.column_labels
+  end
+
+  def test_grid_values
+    board = Board.new(4, "Board 1", false)
+    vals = " ." * 4
+
+    assert_equal vals, board.display_values(1)
+  end
 end

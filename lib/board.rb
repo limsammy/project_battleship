@@ -1,6 +1,8 @@
 require_relative 'space'
 
 class Board
+  attr_reader :size, :type, :grid, :ships
+
   def initialize(size, type, ai)
     @ai = ai
     @type = type
@@ -45,7 +47,7 @@ class Board
     return false unless coordinates
     return false if coordinates.class == String
     coordinates.each do |x, y|
-      unless @grid[x][y].abbv == "."
+      unless @grid[x][y].nickname == "."
         Interface.coordinates_not_empty
         return false
       end
@@ -55,5 +57,42 @@ class Board
 
   def place_object(object, coordinates)
     coordinates.each { |x, y| @grid[x][y] = object }
+  end
+
+  def place_ships
+    @ships.each do |ship|
+      coordinates = get_coordinates(ship)
+      until coordinates
+        coordinates = get_coordinates(ship)
+      end
+      place_object(ship, coordinates)
+    end
+    Interface.show_board_to_player(self) unless @ai
+  end
+
+  def display_grid
+    display_grid =
+      [ outline,
+        column_labels,
+        row_labels_and_values,
+        outline
+      ]
+    display_grid.flatten.join("\n")
+  end
+
+  def outline
+    "=" * ((self.size * 2) + 4)
+  end
+
+  def column_labels
+    "  " + (1..self.size).map { |i| " #{(i+64).chr}" }.join
+  end
+
+  def row_labels_and_values
+    (1..self.size).map { |i| i.to_s.rjust(2) + display_values(i-1) }
+  end
+
+  def display_values(r)
+    self.grid[r].map { |c| " #{c.nickname}" }.join
   end
 end
