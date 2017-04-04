@@ -40,4 +40,20 @@ class Board
       false
     end
   end
+
+  def empty_coordinates?(coordinates)
+    return false unless coordinates
+    return false if coordinates.class == String
+    coordinates.each do |x, y|
+      unless @grid[x][y].abbv == "."
+        Interface.coordinates_not_empty
+        return false
+      end
+    end
+    true
+  end
+
+  def place_object(object, coordinates)
+    coordinates.each { |x, y| @grid[x][y] = object }
+  end
 end
