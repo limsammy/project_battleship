@@ -1,4 +1,5 @@
 require 'pry'
+require_relative 'player'
 require_relative 'interface'
 
 class Battleship
@@ -69,15 +70,15 @@ class Battleship
     @interface.get_human_name
     input = get_input
     @human = Player.new(input, false)
-    @human.setup_board(size, ships)
+    @human.board_setup(size, ships)
   end
 
   def computer_setup(size, ships)
     @computer = Player.new("Computer", true)
-    @computer.setup_board(size, ships)
+    @computer.board_setup(size, ships)
     @interface.computer_setup_complete
   end
 end
 
-# ship = Battleship.new
-# ship.start_game
+ship = Battleship.new
+ship.start_game

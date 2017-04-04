@@ -1,4 +1,6 @@
+require_relative 'ship'
 require_relative 'space'
+require_relative 'coord_gen'
 
 class Board
   attr_reader :size, :type, :grid, :ships
@@ -29,10 +31,10 @@ class Board
     end
 
     if @ai
-      generator.calc_ship_coordinates(ship.size)
+      generator.human_ship_coordinates(ship.size)
     else
       Interface.placed_player_ship(ship, self)
-      generator.calc_ship_coordinates(ship.size)
+      generator.human_ship_coordinates(ship.size)
     end
 
     if empty_coordinates?(generator.coordinates)
