@@ -1,5 +1,5 @@
 class Space
-  attr_reader :nickname
+  attr_reader :nickname, :name
 
   def initialize(name = nil)
     @name = name
