@@ -1,74 +1,53 @@
 require 'simplecov'
 SimpleCov.start
-require 'pry'
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/board'
 require './lib/ship'
-require './lib/space'
 
 class BoardTest < Minitest::Test
-  def test_board_exists
-    board = Board.new(4, "Board 1", false)
-
-    assert          board
-    assert_equal 4, board.size
+  def setup
+    @board = Board.new($stdin, $stdout)
+    @board.setup
   end
 
-  def test_create_board
-    board = Board.new(4, "Board 1", false)
+  def test_player_can_miss
+    @ship = Ship.new('x', 2, "A1 A2")
+    @test_board = @board.setup_board(4)
+    @ship.set_coordinates(@test_board)
 
-    board_test = board.setup_grid
-
-    assert_equal 4,   board_test.length
-    assert_equal 4,   board_test[0].length
-    assert_equal Space, board_test[rand(0..3)][rand(0..3)].class
+    assert_equal nil, @board.player_shoot("A3", @test_board)
   end
 
-  def test_board_can_be_created_automatically
-    board = Board.new(4, "Board 1", false)
+  def test_player_cannot_shoot_same_spot_twice
 
-    assert_equal 4,   board.grid.length
-    assert_equal 4,   board.grid[0].length
-    assert_equal Space, board.grid[rand(0..3)][rand(0..3)].class
+    @ship = Ship.new('x', 2, "A1 A2")
+    @ship.set_coordinates(@board.ai_board)
+    @board.player_shoot("A2")
+    assert_equal "invalid", @board.player_shoot("A2")
   end
 
-  def test_outline
-    board = Board.new(4, "Board 1", false)
-
-    line = "=" * 12
-
-    assert_equal line, board.outline
+  def test_win_condition_starts_false
+    assert_equal false, @board.someone_won?
   end
 
-  def test_column_labels
-    board = Board.new(4, "Board 1", false)
-
-    labels = "   A B C D"
-
-    assert_equal labels, board.column_labels
+  def test_it_can_set_win_condition_to_true
+    @board.win!
+    assert_equal true, @board.someone_won?
   end
 
-  def test_board_values
-    board = Board.new(4, "Board 1", false)
-    vals = " ." * 4
-
-    assert_equal vals, board.display_values(1)
+  def test_it_is_players_turn_by_default
+    assert_equal true, @board.player_turn?
   end
 
-  def test_display_board_values_empty
-    board = Board.new(6, "Board 1", false)
-    vals = " . . . . . ."
-
-    assert_equal vals, board.display_values(1)
+  def test_it_can_set_ai_turn
+    @board.turn!
+    assert_equal false, @board.player_turn?
   end
 
-  def test_display_board_values_with_hits_and_misses
-    board = Board.new(6, "Main Board", false)
-    board.grid[1][2] = Space.new("Hit")
-    board.grid[1][4] = Space.new("Miss")
-    vals = " . . H . M ."
-
-    assert_equal vals, board.display_values(1)
+  def test_it_can_swap_turns
+    @board.turn!
+    @board.turn!
+    assert_equal true, @board.player_turn?
   end
 end

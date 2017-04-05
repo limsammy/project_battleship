@@ -1,2 +1,3 @@
-require_relative 'game_test'
-require_relative 'interface_test'
+require_relative 'battleship_test'
+require_relative 'ship_test'
+require_relative 'board_test'

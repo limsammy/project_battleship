@@ -6,7 +6,7 @@ require './lib/battleship'
 
 class BattleshipTest < Minitest::Test
   def test_game_object_instantiates
-    g = Battleship.new
+    g = Battleship.new($stdin, $stdout)
 
     assert_instance_of Battleship, g
   end
