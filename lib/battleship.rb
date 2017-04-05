@@ -1,6 +1,7 @@
 require_relative 'board'
 require_relative 'messager'
 require_relative 'player'
+require_relative 'player_placement'
 
 class Battleship
   include Player
@@ -19,7 +20,7 @@ class Battleship
       return 0
     elsif choice == 'i'
       @messager.print_instructions
-      run_game
+      start_game
     elsif choice == 'p'
       play_game
       return 0
@@ -88,3 +89,6 @@ class Battleship
     @input.gets.strip.upcase
   end
 end
+
+battleship  = Battleship.new($stdin, $stdout)
+battleship.start_game
