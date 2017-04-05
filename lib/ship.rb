@@ -1,13 +1,60 @@
 class Ship
-  attr_reader   :abbv, :coordinates, :type, :size, :nickname
-  attr_accessor :coordinates
+  attr_reader :type, :length, :hits
+  attr_accessor :location
 
-  def initialize(type, size, coordinates = nil)
+  def initialize(type, length, location="")
     @type = type
-    @size = size
-    @coordinates = coordinates
-    @hits = 0
-    @sunk = false
-    @nickname = type[0]
+    @length = length
+    @location = location
+    @hits = length
   end
+
+  def hit
+    @hits -= 1
+  end
+
+  def sunk?
+    @hits == 0
+  end
+
+  def set_coordinates(board)
+    if (valid_placement(coordinate_one(self.location), board))
+      board[coordinate_one(self.location)] = self.type
+    else
+      return "invalid"
+    end
+
+    if (valid_placement(coordinate_two(self.location), board))
+      board[coordinate_two(self.location)] = self.type
+    else
+      return "invalid"
+    end
+
+    if (valid_placement(coordinate_three(self.location), board))
+      board[coordinate_three(self.location)] = self.type
+    else
+      return "invalid"
+    end
+  end
+
+  def set_individual_coordinate(board, coordinate)
+    board[coordinate] = self.type
+  end
+
+  def coordinate_one(coordinates)
+    coordinates.split(" ")[0]
+  end
+
+  def coordinate_two(coordinates)
+    coordinates.split(" ")[1]
+  end
+
+  def coordinate_three(coordinates)
+    coordinates.split(" ")[2]
+  end
+
+  def valid_placement(coordinate, board)
+    board[coordinate] == nil
+  end
+
 end

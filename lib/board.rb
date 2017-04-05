@@ -1,100 +1,89 @@
+require_relative 'messager'
 require_relative 'ship'
-require_relative 'space'
-require_relative 'coord_gen'
+require_relative 'ship_ai'
+require_relative 'player'
 
 class Board
-  attr_reader :size, :type, :grid, :ships
+  include AI
+  include Player
 
-  def initialize(size, type, ai)
-    @ai = ai
-    @type = type
-    @size = size
-    @grid = setup_grid
-    @ships = []
+  attr_reader :ai_board, :player_board
+  attr_accessor :ai_board
+
+  def initialize(input, output)
+    @messager = Messager.new(input, output)
+    @input = input
+    @output = output
+    @win_condition = false
+    @cpu_win_condition = false
+    @player_turn = true
+    @ai_ship = []
+    @player_shot_counter = 0
+    @ai_shot_counter = 0
+    @finish_time = Time.now
+    @start_time = Time.now
   end
 
-  def setup_grid
-    Array.new(@size) { Array.new(@size) { Space.new } }
+  def setup
+    @ai_board = setup_board(4)
+    @displayed_ai_board = setup_board(4)
+    @player_board = setup_board(4)
   end
 
-  def get_ships(ships)
-    ships.each do |name, size, coordinates|
-      @ships.push(Ship.new(name, size, coordinates))
-    end
-  end
-
-  def get_coordinates(ship)
-    if ship.coordinates.nil?
-      generator = CoordGen.new(@size)
-    else
-      generator = CoordGen.new(@size, ship.coordinates)
-    end
-
-    if @ai
-      generator.human_ship_coordinates(ship.size)
-    else
-      Interface.placed_player_ship(ship, self)
-      generator.human_ship_coordinates(ship.size)
-    end
-
-    if empty_coordinates?(generator.coordinates)
-      generator.coordinates
-    else
-      ship.coordinates = nil
-      false
-    end
-  end
-
-  def empty_coordinates?(coordinates)
-    return false unless coordinates
-    return false if coordinates.class == String
-    coordinates.each do |x, y|
-      unless @grid[x][y].nickname == "."
-        Interface.coordinates_not_empty
-        return false
+  def setup_board(size)
+    letters = Array ('A'..'Z')
+    hash = {}
+    size.times do |i|
+      x = i+1
+      y = letters[i]
+      key = y+x.to_s
+      hash.store(key, nil)
+      size.times do |j|
+        x = j+1
+        key = y+x.to_s
+        hash.store(key, nil)
       end
     end
-    true
+    Hash[hash.sort.map {|key, value| [key, value]}]
   end
 
-  def place_object(object, coordinates)
-    coordinates.each { |x, y| @grid[x][y] = object }
+  def end_game_win
+    @finish_time = Time.now
+    @messager.win(@player_shot_counter, @start_time, @finish_time)
+    win!
   end
 
-  def place_ships
-    @ships.each do |ship|
-      coordinates = get_coordinates(ship)
-      until coordinates
-        coordinates = get_coordinates(ship)
-      end
-      place_object(ship, coordinates)
-    end
-    Interface.show_board_to_player(self) unless @ai
+  def end_game_lose
+    @finish_time = Time.now
+    @messager.lose(@ai_shot_counter, @start_time, @finish_time)
+    cpu_win!
   end
 
-  def display_grid
-    display_grid =
-      [ outline,
-        column_labels,
-        row_labels_and_values,
-        outline
-      ]
-    display_grid.flatten.join("\n")
+  def print_player_map
+    @messager.print_player_map(@displayed_ai_board)
   end
 
-  def outline
-    "=" * ((self.size * 2) + 4)
+  def print_ai_map
+    @messager.print_ai_map(@player_board)
   end
 
-  def column_labels
-    "  " + (1..self.size).map { |i| " #{(i+64).chr}" }.join
+  def someone_won?
+    @win_condition || @cpu_win_condition
   end
 
-  def row_labels_and_values
-    (1..self.size).map { |i| i.to_s.rjust(2) + display_values(i-1) }
+  def win!
+    @win_condition = true
   end
 
-  def display_values(r)
-    self.grid[r].map { |c| " #{c.nickname}" }.join
+  def cpu_win!
+    @cpu_win_condition = true
+  end
+
+  def player_turn?
+    @player_turn
+  end
+
+  def turn!
+    @player_turn = !@player_turn
   end
 end

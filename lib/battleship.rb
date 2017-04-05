@@ -1,84 +1,90 @@
-require 'pry'
+require_relative 'board'
+require_relative 'messager'
 require_relative 'player'
-require_relative 'interface'
 
 class Battleship
-  attr_reader :human, :computer
+  include Player
 
-  def initialize
-    @interface = Interface.new
-  end
-
-  def get_input
-    gets.chomp.downcase
+  def initialize(input, output)
+    @messager = Messager.new(input, output)
+    @input = input
+    @output = output
   end
 
   def start_game
-    @interface.welcome
-    game_menu_choice
-  end
-
-  def game_menu_choice
-    input = get_input
-    case input
-    when 'p'
-      choose_difficulty
-    when 'i'
-      show_instructions
-    when 'q'
-      abort('Quitting...')
+    @messager.welcome
+    choice ||= get_menu_option
+    if choice == 'q'
+      @output.puts "Thanks for playing."
+      return 0
+    elsif choice == 'i'
+      @messager.print_instructions
+      run_game
+    elsif choice == 'p'
+      play_game
+      return 0
     end
   end
 
-  def show_instructions
-    @interface.instructions
-    start_game
+  def play_game
+    @new_game = Board.new(@input, @output)
+    @p_ship = []
+    @valid_choices = @new_game.setup_board(4).keys
+    @new_game.setup
+    @new_game.randomize_ai_board
+    @messager.print_intro
+    @messager.two_unit_ship
+    place_two_unit_ship
+    @messager.three_unit_ship
+    place_three_unit_ship
+
+    while !@new_game.someone_won?
+      if @new_game.player_turn?
+        @new_game.print_player_map
+        if player_shoot == "invalid"
+          player_shoot
+        end
+        @new_game.turn!
+        sleep(0.5)
+      else
+        ai_shoot
+        @new_game.print_ai_map
+        @new_game.turn!
+        sleep(0.5)
+      end
+    end
+    play_again
   end
 
-  def choose_difficulty
-    @interface.difficulties
-    input = get_input
-    case input
-    when 'e'
-      size = 4
-      ships = [ ["Destroyer",   2],
-                ["Patrol",      3]]
-      human_setup(size, ships)
-      computer_setup(size, ships)
-    when "m"
-      size = 8
-      ships = [ ["Destroyer",   2],
-                ["Patrol",      3],
-                ["Battleship",  4]]
-      human_setup(size, ships)
-      computer_setup(size, ships)
-    when "h"
-      size = 8
-      ships = [ ["Destroyer",   2],
-                ["Patrol",      3],
-                ["Battleship",  4],
-                ["Carrier",     5]]
-      human_setup(size, ships)
-      computer_setup(size, ships)
+  def play_again
+    @messager.play_again
+    choice = get_menu_option
+    if choice == 'p'
+      play_game
     else
-      @interface.selection_error(selection)
-      select_difficulty
+      return 0
     end
   end
 
-  def human_setup(size, ships)
-    @interface.get_human_name
-    input = get_input
-    @human = Player.new(input, false)
-    @human.board_setup(size, ships)
+  def player_shoot
+    shot = placement_input
+    if @valid_choices.include?(shot)
+      @new_game.player_shoot(shot)
+    else
+      @messager.invalid_shot
+      return "invalid"
+    end
   end
 
-  def computer_setup(size, ships)
-    @computer = Player.new("Computer", true)
-    @computer.board_setup(size, ships)
-    @interface.computer_setup_complete
+  def ai_shoot
+    @new_game.ai_shoot(@p_ship)
+  end
+
+  def get_menu_option
+    @input.gets.strip.downcase[0]
+  end
+
+  def placement_input
+    @input.gets.strip.upcase
   end
 end
-
-ship = Battleship.new
-ship.start_game
