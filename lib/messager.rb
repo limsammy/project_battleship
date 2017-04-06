@@ -11,39 +11,39 @@ class Messager
   end
 
   def repeat_shot
-    output.puts "Coordinate has already been shot at, shoot again"
+    output.puts "You've already targeted this coordinate, shoot again!"
   end
 
   def miss
     system "clear"
-    output.puts "You Miss!"
+    output.puts "You miss!"
   end
 
   def ai_miss
-    output.puts "Computer Misses!"
+    output.puts "Computer misses!"
   end
 
   def hit
     system "clear"
-    output.puts "You Hit!"
+    output.puts "You hit!"
   end
 
   def ai_hit
-    output.puts "Computer Hit!"
+    output.puts "Computer hit!"
   end
 
   def sunk_ship(ship)
-    output.puts "You sunk your opponents size #{ship.length} ship!"
+    output.puts "You sunk your opponents #{ship.length} size ship!"
     sleep(0.5)
   end
 
   def sunk_player_ship(ship)
-    output.puts "Computer sunk your size #{ship.length} ship!"
+    output.puts "Computer sunk your #{ship.length} size ship!"
     sleep(0.5)
   end
 
   def print_instructions
-    output.puts "You have a grid from A1-D4, place a two unit ship and a three unit ship on the board.\nYour opponent will do the same.  You will alternate taking shots with your opponent, marking O for a miss and H for a hit.\nWhen a ship is fully hit, it is sunk.  When you sink all your opponents ships you win!"
+    output.puts "You have a grid from A1-D4, place a two unit ship and a three unit ship on the board.\nYour opponent will do the same.  You will take turns taking shots with your opponent, marking O for a miss and H for a hit.\nWhen a ship is fully hit, it is sunk.  When you sink all your opponents ships, you win the game!"
   end
 
   def print_intro
