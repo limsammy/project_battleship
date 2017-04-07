@@ -81,13 +81,16 @@ class Messager
   end
 
   def print_player_map(board)
-    output.puts "\nYour turn! Here's what you know:\n===========\n"
+    output.puts "\nYour turn! Here's what you know:
+                  \n===========\n"
     print_grid(board)
-    output.print "\n===========\nEnter a coordinate to shoot at:"
+    output.print "\n===========\n
+                  Enter a coordinate to shoot at:"
   end
 
   def print_ai_map(board)
-    output.puts "\nAfter my turn, here's your map:\n===========\n"
+    output.puts "\nAfter my turn, here's your map:
+                  \n===========\n"
     print_grid(board)
     output.puts ""
   end
