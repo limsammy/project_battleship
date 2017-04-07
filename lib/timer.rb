@@ -3,7 +3,7 @@ module Timer
     finish.strftime("%M").to_i - start.strftime("%M").to_i
   end
 
-  def print_time_seconds(start, finish)\
+  def print_time_seconds(start, finish)
     printed_time = finish.strftime("%S").to_i - start.strftime("%S").to_i
     if printed_time < 0
       printed_time *= -1

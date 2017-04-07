@@ -56,5 +56,4 @@ class Ship
   def valid_placement(coordinate, board)
     board[coordinate] == nil
   end
-
 end

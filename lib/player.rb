@@ -13,13 +13,11 @@ module Player
       @messager.repeat_shot
       return "invalid"
     end
-
   end
 
   def hit_ship(ship)
     ship.hit
   end
-
 
   def hit_sequence(coordinate)
     @ai_ship.each do |ship|
@@ -36,5 +34,4 @@ module Player
       end
     end
   end
-
 end
